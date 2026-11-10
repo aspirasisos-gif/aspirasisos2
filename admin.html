@@ -390,14 +390,13 @@
   }
 
   function simpanPerubahan(kodeTiket, index) {
-    var password = sessionStorage.getItem('adminPass') || document.getElementById('passInput').value.trim();
     var statusVal = document.getElementById(`status_${index}`).value;
     var progressVal = document.getElementById(`progress_${index}`).value.trim();
     var catatanVal = document.getElementById(`catatan_${index}`).value.trim();
 
     var payload = {
       action: "update_admin",
-      pass: password,
+      pass: currentAdminPass,
       kode: kodeTiket,
       status: statusVal,
       progress: progressVal,
@@ -407,12 +406,24 @@
     var formData = new URLSearchParams();
     formData.append("payload", JSON.stringify(payload));
 
-    fetch(URL_APP, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: formData })
+    fetch(URL_APP, { 
+      method: "POST", 
+      headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
+      body: formData 
+    })
     .then(r => r.json())
     .then(d => {
-      if (d.status === "success") { alert("✅ Berhasil disimpan!"); loadAdminData(); }
-      else { alert("❌ Gagal menyimpan."); }
-    }).catch(e => alert("Gagal koneksi."));
+      if (d.status === "success") { 
+        alert("✅ Perubahan berhasil disimpan!"); 
+        loadAdminData(); 
+      } else { 
+        alert("❌ Gagal menyimpan: " + (d.message || "Kesalahan server")); 
+      }
+    })
+    .catch(e => {
+      console.error(e);
+      alert("Gagal koneksi ke server. Pastikan URL Apps Script sudah benar.");
+    });
   }
 
   function hapusLaporan(kode) {
