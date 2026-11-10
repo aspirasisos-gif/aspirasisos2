@@ -3,140 +3,252 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin Dashboard Aspirasisos</title>
-<style>
-  :root {
-    --bg-app: #f1f5f9; --surface: #ffffff; --primary: #4f46e5; --primary-hover: #4338ca;
-    --text-main: #1e293b; --text-muted: #64748b; --border: #e2e8f0; --danger: #ef4444; --danger-hover: #dc2626;
-  }
-  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg-app); padding: 1rem; margin: 0; color: var(--text-main); }
-  .container { max-width: 1400px; margin: 0 auto; background: var(--surface); padding: 1.5rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-  .header-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 2px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem; }
-  h2 { margin: 0; color: var(--primary); font-size: 1.5rem; }
-  
-  .table-container { width: 100%; overflow-x: auto; max-height: 70vh; border: 1px solid var(--border); border-radius: 12px; }
-  table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; white-space: nowrap; }
-  th, td { padding: 0.75rem 0.9rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
-  th { background: #f8fafc; color: #475569; font-weight: 700; position: sticky; top: 0; z-index: 10; }
-  tr:hover { background: #f8fafc; }
-
-  input, select, textarea { width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; box-sizing: border-box; }
-  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
-  
-  .btn { padding: 0.5rem 0.8rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 0.8rem; transition: background 0.2s; color: white; display: inline-flex; align-items: center; gap: 0.3rem; }
-  .btn-primary { background: var(--primary); }
-  .btn-primary:hover { background: var(--primary-hover); }
-  .btn-danger { background: var(--danger); }
-  .btn-danger:hover { background: var(--danger-hover); }
-  .btn-success { background: #10b981; }
-  
-  .thumb-img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); background: #eee; }
-  #loginArea { max-width: 400px; margin: 4rem auto; text-align: center; padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-</style>
+<title>Admin Dashboard - Aspirasisos</title>
+<!-- Menghubungkan file style.css secara terpisah -->
+<link rel="stylesheet" href="style.css">
+<!-- Chart.js untuk Visualisasi Masalah -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<div class="container">
+<div class="main-wrapper">
   
+  <!-- LOGIN ADMIN MENGGUNAKAN EMAIL & PASSWORD -->
+  <!-- Logo halaman login ditaruh di dalam pembungkus #loginArea agar otomatis tersembunyi saat masuk dashboard -->
   <div id="loginArea">
-    <h2>🛡️ Admin Login</h2>
-    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Masukkan password</p>
-    <input type="password" id="passInput" placeholder="Password Admin" onkeypress="checkEnter(event)" style="text-align: center; margin-bottom: 1rem;">
-    <button type="button" class="btn btn-primary" onclick="loadAdminData()" style="width: 100%; justify-content: center;">Masuk ke Dashboard</button>
+    <img src="foto/pp.jpeg" class="admin-logo" alt="logo aspirasisos">
+    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"></div>
+    <h2>Admin Aspirasisos</h2>
+    <p style="color: var(--app-muted); font-size: 0.88rem; margin-bottom: 1.5rem;">Masukkan email dan password pengelola.</p>
+    
+    <!-- Input Email -->
+    <input type="email" id="emailInput" placeholder="Email Admin" style="margin-bottom: 0.8rem; padding: 0.75rem;">
+    <!-- Input Password -->
+    <input type="password" id="passInput" placeholder="Password Admin" onkeypress="checkEnter(event)" style="margin-bottom: 1rem; padding: 0.75rem;">
+    
+    <button type="button" class="btn btn-primary" onclick="loadAdminData()" style="width: 100%; padding: 0.75rem;">Masuk ke Dashboard</button>
   </div>
 
-  <div id="dataArea" style="display: none;">
-    <div class="header-flex">
-      <div>
-        <h2>🛡️ Dashboard Admin</h2>
-        <p style="margin: 0.2rem 0 0 0; color: var(--text-muted); font-size: 0.85rem;">Edit status, progres, ganti foto bukti, atau hapus data secara langsung.</p>
+  <!-- DASHBOARD UTAMA -->
+  <div id="dataArea" style="display: none;" class="dashboard-container">
+    <div class="top-nav">
+      <!-- Logo dipindahkan ke dalam nav berdampingan dengan teks Dashboard -->
+      <div class="dashboard-header-block">
+        <img src="foto/pp.jpeg" class="dashboard-logo" alt="logo dashboard">
+        <div>
+          <h2>Dashboard</h2>
+          <p>Sistem Terpadu Manajemen Pengaduan & Aspirasi Siswa</p>
+        </div>
       </div>
-      <button type="button" class="btn btn-success" onclick="loadAdminData()">🔄 Refresh Data</button>
+      
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <button type="button" class="btn btn-success" onclick="loadAdminData()">🔄 Refresh</button>
+        <button type="button" class="btn btn-warning" onclick="exportToCSV()">📥 Ekspor CSV</button>
+      </div>
     </div>
 
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Kode</th>
-            <th>Judul</th>
-            <th>Kategori</th>
-            <th>Isi Laporan</th>
-            <th>Tanggal</th>
-            <th>Kontak</th>
-            <th>Lokasi</th>
-            <th>Foto Bukti</th>
-            <th>Status</th>
-            <th>Progres / Hasil</th>
-            <th>Rating</th>
-            <th>Ulasan</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody id="tabelAdminBody">
-          <tr><td colspan="13" style="text-align: center; color: var(--text-muted);">Memuat data database...</td></tr>
-        </tbody>
-      </table>
+
+    <!-- 1. KARTU STATISTIK (SUMMARY METRICS) -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <h4>Total Laporan</h4>
+        <div class="value" id="statTotal">0</div>
+      </div>
+      <div class="metric-card">
+        <h4>Status Diterima</h4>
+        <div class="value" style="color: var(--app-primary);" id="statDiterima">0</div>
+      </div>
+      <div class="metric-card">
+        <h4>Sedang Diproses</h4>
+        <div class="value" style="color: var(--app-warning);" id="statDiproses">0</div>
+      </div>
+      <div class="metric-card">
+        <h4>Selesai</h4>
+        <div class="value" style="color: var(--app-success);" id="statSelesai">0</div>
+      </div>
     </div>
+
+    <!-- NAVIGASI TAB -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('laporan', this)">📋 Daftar Laporan Masuk</button>
+      <button class="tab-btn" onclick="switchTab('siswa', this)">👥 Database Siswa</button>
+      <button class="tab-btn" onclick="switchTab('statistik', this)">📊 Visualisasi Masalah</button>
+    </div>
+
+    <!-- TAB 1: LAPORAN MASUK, PENCARIAN, FILTER, & CATATAN INTERNAL -->
+    <div id="tab-laporan" class="section-content active">
+      <div class="filter-section" style="padding: 0 0 1rem 0; background: transparent; border: none;">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Cari kode, judul, atau isi..." onkeyup="filterTabel()" style="width: 260px;">
+        </div>
+        <div class="filter-box">
+          <select id="filterKategori" onchange="filterTabel()">
+            <option value="">Semua Kategori</option>
+            <option value="Pembelajaran">Pembelajaran</option>
+            <option value="Perundungan/Kekerasan">Perundungan/Kekerasan</option>
+            <option value="Fasilitas">Fasilitas</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+          <select id="filterStatus" onchange="filterTabel()">
+            <option value="">Semua Status</option>
+            <option value="Diterima">Diterima</option>
+            <option value="Diproses">Diproses</option>
+            <option value="Selesai">Selesai</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table id="tabelLaporan">
+          <thead>
+            <tr>
+              <th>Kode</th>
+              <th>Judul & Kategori</th>
+              <th>Pelapor / Kontak</th>
+              <th>Lokasi & Tanggal</th>
+              <th>Status</th>
+              <th>Progres Tindak Lanjut</th>
+              <th>Catatan Internal (Privat)</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabelAdminBody">
+            <tr><td colspan="9" style="text-align: center; color: var(--app-muted); padding: 3rem;">Memuat data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 2: DATABASE SISWA -->
+    <div id="tab-siswa" class="section-content">
+      <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--app-text);">Daftar Siswa</h3>
+      <!-- FORM TAMBAH SISWA BARU -->
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; background: #f8fafc; padding: 0.75rem; border-radius: 12px; border: 1px solid var(--app-border);">
+          <input type="text" id="inputNimBaru" placeholder="Nomor NIS / NIM" style="width: 150px; padding: 0.5rem;">
+          <input type="text" id="inputNamaBaru" placeholder="Nama Lengkap Siswa" style="width: 200px; padding: 0.5rem;">
+          <button type="button" class="btn btn-primary" onclick="tambahSiswaBaru()" style="padding: 0.5rem 1rem;">+ Tambah Siswa</button>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Nomor Induk Siswa (NIM / NIS)</th>
+              <th>Nama Lengkap Siswa</th>
+            </tr>
+          </thead>
+          <tbody id="tabelSiswaBody">
+            <tr><td colspan="3" style="text-align: center; color: var(--app-muted); padding: 2rem;">Memuat data siswa...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: VISUALISASI MASALAH (CHART.JS) -->
+    <div id="tab-statistik" class="section-content">
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h4 style="margin-bottom: 1rem; font-size: 1rem; color: var(--app-muted);">Distribusi Berdasarkan Kategori Masalah</h4>
+          <canvas id="chartKategori" style="max-height: 280px;"></canvas>
+        </div>
+        <div class="chart-card">
+          <h4 style="margin-bottom: 1rem; font-size: 1rem; color: var(--app-muted);">Proporsi Status Penanganan</h4>
+          <canvas id="chartStatus" style="max-height: 280px;"></canvas>
+        </div>
+      </div>
+    </div>
+
   </div>
-
 </div>
 
 <script>
   var URL_APP = "https://script.google.com/macros/s/AKfycbwlZUniv7zdhKkzE830Zxghsc2uRbcmAnuW29QWlQGGygpZN5pOzY8HlzdCjBEvnIl6vQ/exec";
+  var globalData = [];
+  var katChart = null;
+  var statChart = null;
 
-  function checkEnter(e) {
-    if (e.key === "Enter") { loadAdminData(); }
+  function checkEnter(e) { if (e.key === "Enter") { loadAdminData(); } }
+
+  function switchTab(tabName, btnEl) {
+    document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tabName).classList.add('active');
+    btnEl.classList.add('active');
   }
 
+  // --- FUNGSI LOGIN BARU (Wajib Email & Password Benar) ---
   function loadAdminData() {
-    var pass = document.getElementById('passInput').value.trim() || sessionStorage.getItem('adminPass');
-    if (!pass) { alert("Masukkan password terlebih dahulu!"); return; }
+    var email = document.getElementById('emailInput').value.trim();
+    var pass = document.getElementById('passInput').value.trim();
+    
+    if (!email || !pass) { 
+      alert("Masukkan email dan password terlebih dahulu!"); 
+      return; 
+    }
 
-    fetch(URL_APP + "?action=admin_komplit&pass=" + encodeURIComponent(pass))
+    // Validasi email admin terdaftar
+    if (email.toLowerCase() !== "aspirasisos@gmail.com") {
+      alert("❌ Email admin tidak terdaftar dalam sistem!");
+      return;
+    }
+
+    // Cek password ke backend Apps Script
+    fetch(URL_APP + "?action=admin&pass=" + encodeURIComponent(pass))
     .then(r => r.json())
     .then(d => {
       if(d.status === "success") {
-        sessionStorage.setItem('adminPass', pass);
         document.getElementById('loginArea').style.display = "none";
         document.getElementById('dataArea').style.display = "block";
-        renderTabel(d.data, pass);
+        globalData = d.data;
+        updateMetrics(globalData);
+        renderTabel(globalData);
+        loadDatabaseSiswa(pass);
+        renderCharts(globalData);
       } else {
-        sessionStorage.removeItem('adminPass');
-        alert("❌ Kata sandi salah!");
+        alert("❌ Kata sandi admin salah!");
       }
     })
-    .catch(e => {
-      alert("Gagal terhubung ke server database.");
-    });
+    .catch(e => { alert("Gagal terhubung ke server database."); });
   }
 
-  function renderTabel(dataList, password) {
+  function logoutAdmin() {
+    sessionStorage.clear();
+    window.location.reload();
+  }
+
+  function updateMetrics(dataList) {
+    var total = dataList.length;
+    var diterima = dataList.filter(x => x.status === 'Diterima').length;
+    var diproses = dataList.filter(x => x.status === 'Diproses').length;
+    var selesai = dataList.filter(x => x.status === 'Selesai').length;
+
+    document.getElementById('statTotal').innerText = total;
+    document.getElementById('statDiterima').innerText = diterima;
+    document.getElementById('statDiproses').innerText = diproses;
+    document.getElementById('statSelesai').innerText = selesai;
+  }
+
+  function renderTabel(dataList) {
     var tbody = document.getElementById('tabelAdminBody');
-    if (dataList.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="13" style="text-align: center; color: var(--text-muted);">Belum ada laporan masuk.</td></tr>`;
+    if (!dataList || dataList.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--app-muted); padding: 3rem;">Belum ada laporan masuk.</td></tr>`;
       return;
     }
 
     var html = "";
     dataList.forEach((item, index) => {
-      var fotoPreview = item.foto && item.foto !== "-" ? `<a href="${item.foto}" target="_blank"><img src="${item.foto}" class="thumb-img" title="Klik untuk memperbesar"></a>` : `<span style="font-size:0.75rem; color:#94a3b8;">Tanpa Foto</span>`;
+      var waLink = item.kontak && item.kontak !== "-" ? `<a href="https://wa.me/${item.kontak.replace(/^0/, '62')}?text=Halo%20dengan%20pelapor%20tiket%20${item.kode}" target="_blank" class="btn btn-success" style="padding: 0.35rem 0.6rem; font-size: 0.75rem;">💬 WhatsApp</a>` : '-';
 
       html += `
-        <tr data-kode="${item.kode}">
-          <td><b style="font-family: monospace; color: var(--primary);">${item.kode}</b></td>
-          <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;" title="${item.judul}">${item.judul}</td>
-          <td><span style="background: #e0e7ff; color: #3730a3; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">${item.kategori}</span></td>
-          <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;" title="${item.isi}">${item.isi}</td>
-          <td style="font-size: 0.8rem; color: #64748b;">${item.tanggal}</td>
-          <td style="font-size: 0.8rem; color: #64748b;">${item.kontak}</td>
-          <td style="font-size: 0.8rem; color: #64748b;">${item.lokasi || '-'}</td>
+        <tr>
+          <td><b style="font-family: monospace; color: var(--app-primary);">${item.kode}</b></td>
           <td>
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              ${fotoPreview}
-              <input type="file" id="file_${index}" accept="image/*" style="font-size: 0.7rem; padding: 2px; width: 130px;">
-            </div>
+            <strong>${item.judul}</strong><br>
+            <span style="background: #e0e7ff; color: #3730a3; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">${item.kategori}</span>
           </td>
+          <td style="font-size: 0.82rem; color: var(--app-muted);">${item.kontak || '-'}</td>
+          <td style="font-size: 0.82rem; color: var(--app-muted);">${item.lokasi || '-'}<br>${item.tanggal || ''}</td>
           <td>
             <select id="status_${index}" style="font-weight: bold; width: 110px;">
               <option value="Diterima" ${item.status === 'Diterima' ? 'selected' : ''}>Diterima</option>
@@ -145,14 +257,16 @@
             </select>
           </td>
           <td>
-            <input type="text" id="progress_${index}" value="${item.progress || ''}" placeholder="Tulis progres..." style="min-width: 160px;">
+            <input type="text" id="progress_${index}" value="${item.progress || ''}" placeholder="Tulis progres..." style="min-width: 150px;">
           </td>
-          <td style="text-align: center; font-weight: bold; color: #f59e0b;">${item.rating ? item.rating + ' ⭐' : '-'}</td>
-          <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; color: #475569;" title="${item.ulasan}">${item.ulasan || '-'}</td>
+          <td>
+            <input type="text" id="catatan_${index}" value="${item.catatanInternal || ''}" placeholder="Catatan privat..." style="min-width: 140px; background: #fffbeb;">
+          </td>
+          <td>${waLink}</td>
           <td>
             <div style="display: flex; gap: 4px;">
               <button type="button" class="btn btn-primary" onclick="simpanPerubahan('${item.kode}', ${index})">💾 Simpan</button>
-              <button type="button" class="btn btn-danger" onclick="hapusLaporan('${item.kode}')">🗑️ Hapus</button>
+              <button type="button" class="btn btn-danger" onclick="hapusLaporan('${item.kode}')">🗑️</button>
             </div>
           </td>
         </tr>
@@ -161,112 +275,159 @@
     tbody.innerHTML = html;
   }
 
-  // Kompresi Foto sebelum diunggah (Mencegah Payload Too Large)
-  function kompresGambar(file, maxWidth, quality, callback) {
-    var reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = function(e) {
-      var img = new Image();
-      img.src = e.target.result;
-      img.onload = function() {
-        var canvas = document.createElement('canvas');
-        var width = img.width;
-        var height = img.height;
-        if (width > maxWidth) {
-          height = Math.round((height * maxWidth) / width);
-          width = maxWidth;
-        }
-        canvas.width = width;
-        canvas.height = height;
-        var ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-        callback(canvas.toDataURL('image/jpeg', quality));
-      };
+  function filterTabel() {
+    var keyword = document.getElementById('searchInput').value.toLowerCase();
+    var kat = document.getElementById('filterKategori').value;
+    var stat = document.getElementById('filterStatus').value;
+
+    var filtered = globalData.filter(item => {
+      var matchKey = (item.kode + item.judul + item.isi).toLowerCase().includes(keyword);
+      var matchKat = kat === "" || item.kategori === kat;
+      var matchStat = stat === "" || item.status === stat;
+      return matchKey && matchKat && matchStat;
+    });
+    renderTabel(filtered);
+  }
+
+  function loadDatabaseSiswa(pass) {
+    fetch(URL_APP + "?action=get_siswa&pass=" + encodeURIComponent(pass))
+    .then(r => r.json())
+    .then(d => {
+      if (d.status === "success") {
+        var tbody = document.getElementById('tabelSiswaBody');
+        var html = "";
+        d.data.forEach((s, idx) => {
+          html += `<tr><td>${idx + 1}</td><td><b>${s.nim}</b></td><td>${s.nama}</td></tr>`;
+        });
+        tbody.innerHTML = html || `<tr><td colspan="3" style="text-align:center;">Data siswa kosong.</td></tr>`;
+      }
+    }).catch(e => {});
+  }
+
+  // --- FUNGSI TAMBAH SISWA BARU ---
+  function tambahSiswaBaru() {
+    var password = sessionStorage.getItem('adminPass');
+    var nim = document.getElementById('inputNimBaru').value.trim();
+    var nama = document.getElementById('inputNamaBaru').value.trim();
+
+    if (!nim || !nama) {
+      alert("⚠️ Mohon isi NIM/NIS dan Nama Lengkap siswa!");
+      return;
+    }
+
+    var payload = {
+      action: "tambah_siswa",
+      pass: password,
+      nim: nim,
+      nama: nama
     };
+
+    var formData = new URLSearchParams();
+    formData.append("payload", JSON.stringify(payload));
+
+    fetch(URL_APP, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: formData })
+    .then(r => r.json())
+    .then(d => {
+      if (d.status === "success") {
+        alert("✅ Siswa baru berhasil ditambahkan!");
+        document.getElementById('inputNimBaru').value = "";
+        document.getElementById('inputNamaBaru').value = "";
+        loadDatabaseSiswa(password);
+      } else {
+        alert("❌ Gagal menambah siswa.");
+      }
+    }).catch(e => alert("Gagal koneksi server."));
+  }
+
+  function renderCharts(dataList) {
+    var catCount = { "Pembelajaran": 0, "Perundungan/Kekerasan": 0, "Fasilitas": 0, "Lainnya": 0 };
+    var statCount = { "Diterima": 0, "Diproses": 0, "Selesai": 0 };
+
+    dataList.forEach(item => {
+      if (catCount[item.kategori] !== undefined) catCount[item.kategori]++;
+      else catCount["Lainnya"]++;
+      if (statCount[item.status] !== undefined) statCount[item.status]++;
+    });
+
+    if (katChart) katChart.destroy();
+    if (statChart) statChart.destroy();
+
+    var ctx1 = document.getElementById('chartKategori').getContext('2d');
+    katChart = new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(catCount),
+        datasets: [{ label: 'Jumlah Laporan', data: Object.values(catCount), backgroundColor: '#0071E3', borderRadius: 6 }]
+      },
+      options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    var ctx2 = document.getElementById('chartStatus').getContext('2d');
+    statChart = new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(statCount),
+        datasets: [{ data: Object.values(statCount), backgroundColor: ['#0071E3', '#FF9500', '#34C759'] }]
+      },
+      options: { responsive: true }
+    });
+  }
+
+  function exportToCSV() {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Kode,Judul,Kategori,Tanggal,Lokasi,Kontak,Status,Progress\r\n";
+    globalData.forEach(row => {
+      let line = [row.kode, `"${row.judul}"`, row.kategori, row.tanggal, row.lokasi, row.kontak, row.status, `"${row.progress}"`].join(",");
+      csvContent += line + "\r\n";
+    });
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "rekap_aspirasi_siswa.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   function simpanPerubahan(kodeTiket, index) {
     var password = sessionStorage.getItem('adminPass');
     var statusVal = document.getElementById(`status_${index}`).value;
     var progressVal = document.getElementById(`progress_${index}`).value.trim();
-    var fileInput = document.getElementById(`file_${index}`);
+    var catatanVal = document.getElementById(`catatan_${index}`).value.trim();
 
-    var btnTarget = event.target;
-    var originalText = btnTarget.innerText;
-    btnTarget.innerText = "Menyimpan...";
-    btnTarget.disabled = true;
+    var payload = {
+      action: "update_admin",
+      pass: password,
+      kode: kodeTiket,
+      status: statusVal,
+      progress: progressVal,
+      catatanInternal: catatanVal
+    };
 
-    if (fileInput.files.length > 0) {
-      kompresGambar(fileInput.files[0], 800, 0.7, function(base64Foto) {
-        kirimUpdateBackend(kodeTiket, statusVal, progressVal, base64Foto, password, btnTarget, originalText);
-      });
-    } else {
-      kirimUpdateBackend(kodeTiket, statusVal, progressVal, "", password, btnTarget, originalText);
-    }
+    var formData = new URLSearchParams();
+    formData.append("payload", JSON.stringify(payload));
+
+    fetch(URL_APP, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: formData })
+    .then(r => r.json())
+    .then(d => {
+      if (d.status === "success") { alert("✅ Berhasil disimpan!"); loadAdminData(); }
+      else { alert("❌ Gagal menyimpan."); }
+    }).catch(e => alert("Gagal koneksi."));
   }
 
   function hapusLaporan(kode) {
     var password = sessionStorage.getItem('adminPass');
-    if (!confirm("⚠️ Apakah Anda yakin ingin menghapus laporan [ " + kode + " ]? Data yang dihapus tidak bisa dikembalikan.")) {
-      return;
-    }
+    if (!confirm("⚠️ Hapus laporan [" + kode + "]?")) return;
 
-    var btnTarget = event.target;
-    var originalText = btnTarget.innerText;
-    btnTarget.innerText = "Menghapus...";
-    btnTarget.disabled = true;
+    var payload = { action: "hapus_admin", pass: password, kode: kode };
+    var formData = new URLSearchParams();
+    formData.append("payload", JSON.stringify(payload));
 
-    var payload = {
-      action: "hapus_admin",
-      pass: password,
-      kode: kode
-    };
-
-    fetch(URL_APP, { method: "POST", body: JSON.stringify(payload) })
+    fetch(URL_APP, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: formData })
     .then(r => r.json())
     .then(d => {
-      btnTarget.innerText = originalText;
-      btnTarget.disabled = false;
-      if (d.status === "success") {
-        alert("🗑️ Laporan " + kode + " berhasil dihapus!");
-        loadAdminData();
-      } else {
-        alert("❌ Gagal menghapus: " + (d.message || "Kesalahan server"));
-      }
-    })
-    .catch(e => {
-      btnTarget.innerText = originalText;
-      btnTarget.disabled = false;
-      alert("Gagal terhubung ke jaringan.");
-    });
-  }
-
-  function kirimUpdateBackend(kode, status, progress, fotoBase64, password, btn, origText) {
-    var payload = {
-      action: "update_admin",
-      pass: password,
-      kode: kode,
-      status: status,
-      progress: progress,
-      foto: fotoBase64
-    };
-
-    fetch(URL_APP, { method: "POST", body: JSON.stringify(payload) })
-    .then(r => r.json())
-    .then(d => {
-      btn.innerText = origText;
-      btn.disabled = false;
-      if (d.status === "success") {
-        alert("✅ Data laporan berhasil diperbarui!");
-        loadAdminData();
-      } else {
-        alert("❌ Gagal memperbarui: " + (d.message || "Kesalahan server"));
-      }
-    })
-    .catch(e => {
-      btn.innerText = origText;
-      btn.disabled = false;
-      alert("Gagal terhubung ke jaringan.");
+      if (d.status === "success") { alert("🗑️ Terhapus!"); loadAdminData(); }
+      else { alert("Gagal menghapus."); }
     });
   }
 </script>
