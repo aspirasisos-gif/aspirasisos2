@@ -181,9 +181,8 @@
     }
   }
 
-  // FUNGSI LOGIN ADMIN
+  // FUNGSI LOGIN ADMIN YANG BENAR
   function loadAdminData() {
-    currentAdminPass = pass;
     var email = document.getElementById('emailInput').value.trim();
     var pass = document.getElementById('passInput').value.trim();
     
@@ -196,6 +195,9 @@
       alert("❌ Email admin tidak terdaftar dalam sistem!");
       return;
     }
+
+    // Ambil password ke variabel global setelah variabel 'pass' bernilai
+    currentAdminPass = pass; 
 
     fetch(URL_APP + "?action=admin&pass=" + encodeURIComponent(pass))
     .then(r => r.json())
@@ -214,7 +216,7 @@
     })
     .catch(e => { alert("Gagal terhubung ke server database."); });
   }
-
+  
   function logoutAdmin() {
     sessionStorage.clear();
     window.location.reload();
