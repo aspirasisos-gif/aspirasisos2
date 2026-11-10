@@ -14,10 +14,8 @@
 <div class="main-wrapper">
   
   <!-- LOGIN ADMIN MENGGUNAKAN EMAIL & PASSWORD -->
-  <!-- Logo halaman login ditaruh di dalam pembungkus #loginArea agar otomatis tersembunyi saat masuk dashboard -->
   <div id="loginArea">
-    <img src="pp.jpeg" class="admin-logo" alt="logo aspirasisos">
-    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"></div>
+    <img src="pp.jpeg" class="admin-logo" alt="logo aspirasisos" style="max-width: 90px; margin-bottom: 1rem; display: block; margin-left: auto; margin-right: auto;">
     <h2>Admin Aspirasisos</h2>
     <p style="color: var(--app-muted); font-size: 0.88rem; margin-bottom: 1.5rem;">Masukkan email dan password pengelola.</p>
     
@@ -32,9 +30,8 @@
   <!-- DASHBOARD UTAMA -->
   <div id="dataArea" style="display: none;" class="dashboard-container">
     <div class="top-nav">
-      <!-- Logo dipindahkan ke dalam nav berdampingan dengan teks Dashboard -->
-      <div class="dashboard-header-block">
-        <img src="pp.jpeg" class="dashboard-logo" alt="logo dashboard">
+      <div class="dashboard-header-block" style="display: flex; align-items: center; gap: 1rem;">
+        <img src="pp.jpeg" class="dashboard-logo" alt="logo dashboard" style="max-width: 50px; height: auto;">
         <div>
           <h2>Dashboard</h2>
           <p>Sistem Terpadu Manajemen Pengaduan & Aspirasi Siswa</p>
@@ -46,7 +43,6 @@
         <button type="button" class="btn btn-warning" onclick="exportToCSV()">📥 Ekspor CSV</button>
       </div>
     </div>
-
 
     <!-- 1. KARTU STATISTIK (SUMMARY METRICS) -->
     <div class="metrics-grid">
@@ -119,16 +115,17 @@
       </div>
     </div>
 
-    <!-- TAB 2: DATABASE SISWA -->
+    <!-- TAB 2: DATABASE SISWA (Diperbaiki Tag Penutupnya) -->
     <div id="tab-siswa" class="section-content">
       <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--app-text);">Daftar Siswa</h3>
+      
       <!-- FORM TAMBAH SISWA BARU -->
-        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; background: #f8fafc; padding: 0.75rem; border-radius: 12px; border: 1px solid var(--app-border);">
-          <input type="text" id="inputNimBaru" placeholder="Nomor NIS / NIM" style="width: 150px; padding: 0.5rem;">
-          <input type="text" id="inputNamaBaru" placeholder="Nama Lengkap Siswa" style="width: 200px; padding: 0.5rem;">
-          <button type="button" class="btn btn-primary" onclick="tambahSiswaBaru()" style="padding: 0.5rem 1rem;">+ Tambah Siswa</button>
-        </div>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; background: #f8fafc; padding: 0.75rem; border-radius: 12px; border: 1px solid var(--app-border); margin-bottom: 1.5rem;">
+        <input type="text" id="inputNimBaru" placeholder="Nomor NIS / NIM" style="width: 150px; padding: 0.5rem;">
+        <input type="text" id="inputNamaBaru" placeholder="Nama Lengkap Siswa" style="width: 200px; padding: 0.5rem;">
+        <button type="button" class="btn btn-primary" onclick="tambahSiswaBaru()" style="padding: 0.5rem 1rem;">+ Tambah Siswa</button>
       </div>
+
       <div class="table-responsive">
         <table>
           <thead>
@@ -170,14 +167,20 @@
 
   function checkEnter(e) { if (e.key === "Enter") { loadAdminData(); } }
 
+  // FUNGSI NAVIGASI TAB (Dilengkapi pemicu render ulang chart)
   function switchTab(tabName, btnEl) {
     document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-' + tabName).classList.add('active');
     btnEl.classList.add('active');
+
+    // Jika tab statistik dibuka, render ulang grafik agar langsung tampil sempurna
+    if (tabName === 'statistik' && globalData.length > 0) {
+      renderCharts(globalData);
+    }
   }
 
-  // --- FUNGSI LOGIN BARU (Wajib Email & Password Benar) ---
+  // FUNGSI LOGIN ADMIN
   function loadAdminData() {
     var email = document.getElementById('emailInput').value.trim();
     var pass = document.getElementById('passInput').value.trim();
@@ -187,13 +190,11 @@
       return; 
     }
 
-    // Validasi email admin terdaftar
     if (email.toLowerCase() !== "aspirasisos@gmail.com") {
       alert("❌ Email admin tidak terdaftar dalam sistem!");
       return;
     }
 
-    // Cek password ke backend Apps Script
     fetch(URL_APP + "?action=admin&pass=" + encodeURIComponent(pass))
     .then(r => r.json())
     .then(d => {
@@ -304,9 +305,8 @@
     }).catch(e => {});
   }
 
-  // --- FUNGSI TAMBAH SISWA BARU ---
   function tambahSiswaBaru() {
-    var password = sessionStorage.getItem('adminPass');
+    var password = sessionStorage.getItem('adminPass') || document.getElementById('passInput').value.trim();
     var nim = document.getElementById('inputNimBaru').value.trim();
     var nama = document.getElementById('inputNamaBaru').value.trim();
 
@@ -390,7 +390,7 @@
   }
 
   function simpanPerubahan(kodeTiket, index) {
-    var password = sessionStorage.getItem('adminPass');
+    var password = sessionStorage.getItem('adminPass') || document.getElementById('passInput').value.trim();
     var statusVal = document.getElementById(`status_${index}`).value;
     var progressVal = document.getElementById(`progress_${index}`).value.trim();
     var catatanVal = document.getElementById(`catatan_${index}`).value.trim();
@@ -416,7 +416,7 @@
   }
 
   function hapusLaporan(kode) {
-    var password = sessionStorage.getItem('adminPass');
+    var password = sessionStorage.getItem('adminPass') || document.getElementById('passInput').value.trim();
     if (!confirm("⚠️ Hapus laporan [" + kode + "]?")) return;
 
     var payload = { action: "hapus_admin", pass: password, kode: kode };
