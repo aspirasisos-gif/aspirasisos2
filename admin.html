@@ -164,6 +164,7 @@
   var globalData = [];
   var katChart = null;
   var statChart = null;
+  var currentAdminPass = "";
 
   function checkEnter(e) { if (e.key === "Enter") { loadAdminData(); } }
 
@@ -182,6 +183,7 @@
 
   // FUNGSI LOGIN ADMIN
   function loadAdminData() {
+    currentAdminPass = pass;
     var email = document.getElementById('emailInput').value.trim();
     var pass = document.getElementById('passInput').value.trim();
     
