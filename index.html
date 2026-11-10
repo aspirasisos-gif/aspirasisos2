@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aspirasisos - Layanan Aspirasi dan Pengaduan Siswa</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body onload="initApp()">
+
+<div class="container">
+  
+  <!-- HALAMAN 1: LANDING PAGE -->
+  <div id="page-home">
+    <div class="app-header">
+      <img src="foto/pp.jpeg" class="site-logo" alt="logo Aspirasisos">
+      <h2>Aspirasisos</h2>
+      <p class="slogan">"Karena suara siswa adalah milik bersama dan layak didengar."</p>
+    </div>
+    
+    <div class="action-grid">
+      <button type="button" class="btn btn-main" onclick="showVerifikasi()">✍️ Buat Aspirasi / Pengaduan</button>
+      <a href="https://wa.me/6281234567890?text=Halo%20Bapak/Ibu%20Guru%20BK,%20saya%20butuh%20bantuan%20darurat." class="btn btn-alert" target="_blank">🚨 Saluran Darurat BK</a>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-box">
+        <h4>🔒 Anonim & Real-time</h4>
+        <p>Verifikasi data terintegrasi secara otomatis dengan database internal sekolah.</p>
+      </div>
+      <div class="feature-box">
+        <h4>⚡ Respon Cepat</h4>
+        <p>Gunakan Saluran Darurat saat keadaan <strong><i>Urgent</i></strong></p>
+      </div>
+    </div>
+
+    <!-- Kotak Cek Status -->
+    <div class="card">
+      <div class="card-title">🔍 Cek Progress Laporan</div>
+      <div class="card-subtitle">Masukkan kode tiket unik Anda untuk memantau status penanganan terkini.</div>
+      
+      <div style="display: flex; gap: 0.8rem; align-items: center;">
+        <input type="text" id="cekKode" placeholder="Contoh: A8X9KL" maxlength="6" style="margin:0; font-family: monospace; text-transform: uppercase; font-weight: 700; letter-spacing: 2px;">
+        <button type="button" class="btn btn-main" onclick="cekStatus()" style="white-space: nowrap; padding: 0.95rem 1.8rem;">Cek Tiket</button>
+      </div>
+      <div id="hasilCek" class="hidden status-result-box"></div>
+    </div>
+
+    <!-- Tabel Aspirasi Selesai -->
+    <div class="card">
+      <div class="card-title" style="color: #34c759;">✅ Transparansi Aspirasi Selesai</div>
+      <div class="card-subtitle">Daftar laporan yang telah ditindaklanjuti beserta feedback langsung dari pelapor.</div>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Kategori & Judul</th>
+              <th>Lokasi</th>
+              <th>Bukti Foto</th>
+              <th>Ulasan Kepuasan</th>
+            </tr>
+          </thead>
+          <tbody id="tabelSelesaiBody">
+            <tr><td colspan="4" style="text-align:center; color: var(--apple-muted);">Memuat data aspirasi...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- HALAMAN VERIFIKASI IDENTITAS -->
+  <div id="page-verifikasi" class="hidden">
+    <button type="button" class="back-link" onclick="showHome()">← Kembali ke Beranda</button>
+    <div class="card">
+      <div class="card-title">🔒 Verifikasi Identitas Siswa</div>
+      <div class="card-subtitle">Verifikasi awal untuk memastikan pelapor adalah siswa aktif. Identitas Anda tetap dilindungi.</div>
+      
+      <label>Nomor Induk Mahasiswa / Siswa (NIM / NIS)</label>
+      <input type="text" id="inputNim" placeholder="Contoh: 23002093" style="font-family: monospace; font-weight: bold;">
+
+      <label>Nama Lengkap</label>
+      <input type="text" id="inputNama" placeholder="Contoh: Fahma Hakim">
+
+      <button type="button" class="btn btn-main" id="btnVerifikasi" onclick="prosesVerifikasi()" style="width:100%; margin-top:0.5rem;">Verifikasi & Lanjutkan</button>
+    </div>
+  </div>
+
+  <!-- HALAMAN FORMULIR -->
+  <div id="page-form" class="hidden">
+    <button type="button" class="back-link" onclick="showHome()">← Batal / Kembali</button>
+    
+    <div class="card">
+      <div class="card-title">✍️ Formulir Pengaduan</div>
+      <div class="card-subtitle">Isi rincian pengaduan atau aspirasi Anda secara lengkap dan teliti.</div>
+      
+      <div style="background: rgba(0,113,227,0.06); padding: 1.2rem; border-radius: var(--radius-lg); text-align: center; margin-bottom: 1.5rem; border: 1px dashed rgba(0,113,227,0.3);">
+        <span style="font-size: 0.78rem; color: var(--apple-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Kode Tiket Unik Anda:</span><br>
+        <strong id="kodeTiket" style="color:var(--apple-primary); font-size:2.2rem; letter-spacing: 5px; font-family: monospace;"></strong>
+      </div>
+      
+      <label>Kategori Laporan</label>
+      <select id="kategori">
+        <option value="Pembelajaran">Pembelajaran & Akademik</option>
+        <option value="Perundungan/Kekerasan">Perundungan / Kekerasan</option>
+        <option value="Fasilitas">Fasilitas & Sarana Sekolah</option>
+        <option value="Lainnya">Lainnya</option>
+      </select>
+
+      <label>Judul Laporan</label>
+      <input type="text" id="judul" placeholder="Ringkasan singkat permasalahan">
+
+      <label>Isi Laporan / Detail Kejadian</label>
+      <textarea id="isi" rows="5" placeholder="Jelaskan fakta kronologi kejadian secara obyektif..."></textarea>
+
+      <label>Tanggal Kejadian</label>
+      <input type="date" id="tanggal">
+
+      <label>Lokasi Kejadian</label>
+      <input type="text" id="lokasi" placeholder="Contoh: Gedung Olahraga / Laboratorium 2">
+
+      <label>Unggah Foto Bukti (Opsional)</label>
+      <input type="file" id="fotoBukti" accept="image/*">
+
+      <label>Kontak WhatsApp yang Bisa Dihubungi (Opsional)</label>
+      <input type="text" id="kontak" placeholder="08xxxxxxxxxx">
+
+      <button type="button" class="btn btn-main" id="btnKirim" onclick="kirimForm()" style="width:100%; margin-top: 0.5rem;">Kirim Laporan Sekarang</button>
+    </div>
+  </div>
+
+  <!-- HALAMAN SUKSES -->
+  <div id="page-sukses" class="hidden">
+    <div class="card" style="text-align: center; padding: 3rem 2rem;">
+      <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🎉</div>
+      <h2 style="color: #34c759; margin-bottom: 0.5rem; font-size: 1.8rem; font-weight: 700;">Laporan Berhasil Terkirim!</h2>
+      <p style="color: var(--apple-muted); font-size: 0.95rem;">Aspirasi Anda telah tersimpan dengan aman di dalam database server.</p>
+      
+      <div style="background: rgba(0,0,0,0.03); padding: 1.5rem; border-radius: var(--radius-lg); margin: 1.8rem 0; border: 1px solid var(--apple-hairline);">
+        <span style="font-size: 0.8rem; color: var(--apple-muted); font-weight: 600; letter-spacing: 1px;">KODE TIKET UNIK:</span><br>
+        <strong id="kodeFinal" style="font-size: 2.5rem; color: var(--apple-primary); font-family: monospace; letter-spacing: 5px;"></strong>
+      </div>
+
+      <div style="background: rgba(255,149,0,0.1); border: 1px solid rgba(255,149,0,0.3); padding: 1.2rem; border-radius: var(--radius-lg); margin-bottom: 1.8rem; text-align: left;">
+        <h4 style="color: #b64400; margin-bottom: 0.3rem; font-size: 0.92rem;">⚠️ SIMPAN KODE TIKET ANDA:</h4>
+        <p style="font-size: 0.88rem; color: #863800; margin: 0; line-height: 1.4;">
+          Harap catat atau **Screenshot** kode tiket di atas. Kode ini digunakan untuk mengecek status dan memberikan feedback ketika laporan selesai.
+        </p>
+      </div>
+
+      <button type="button" class="btn btn-main" onclick="showHome()" style="width:100%;">Kembali ke Beranda</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var URL_APP = "https://script.google.com/macros/s/AKfycbwlZUniv7zdhKkzE830Zxghsc2uRbcmAnuW29QWlQGGygpZN5pOzY8HlzdCjBEvnIl6vQ/exec";
+
+  function initApp() {
+    loadTabelSelesai();
+  }
+
+  function buatKode() { 
+    var cs = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", out = "";
+    for (var i = 0; i < 6; i++) out += cs.charAt(Math.floor(Math.random() * cs.length));
+    return out;
+  }
+  
+  function showVerifikasi() {
+    document.getElementById('page-home').classList.add('hidden');
+    document.getElementById('page-form').classList.add('hidden');
+    document.getElementById('page-sukses').classList.add('hidden');
+    document.getElementById('page-verifikasi').classList.remove('hidden');
+    document.getElementById('inputNim').value = "";
+    document.getElementById('inputNama').value = "";
+  }
+
+  function showHome() { 
+    document.getElementById('page-form').classList.add('hidden'); 
+    document.getElementById('page-sukses').classList.add('hidden');
+    document.getElementById('page-verifikasi').classList.add('hidden');
+    document.getElementById('page-home').classList.remove('hidden'); 
+    loadTabelSelesai();
+  }
+
+  function prosesVerifikasi() {
+    var nim = document.getElementById('inputNim').value.trim();
+    var nama = document.getElementById('inputNama').value.trim();
+    
+    if(!nim || !nama) {
+      alert("NIM/NIS dan Nama wajib diisi!"); 
+      return;
+    }
+
+    var btn = document.getElementById('btnVerifikasi');
+    var originalText = btn.innerText;
+    btn.innerText = "Memeriksa Data... ⏳"; 
+    btn.disabled = true;
+
+    fetch(URL_APP + "?action=cek_siswa&nim=" + encodeURIComponent(nim) + "&nama=" + encodeURIComponent(nama))
+    .then(r => r.json())
+    .then(d => {
+      btn.innerText = originalText; 
+      btn.disabled = false;
+      if(d.status === "success") {
+        document.getElementById('page-verifikasi').classList.add('hidden');
+        document.getElementById('page-form').classList.remove('hidden');
+        document.getElementById('kodeTiket').innerText = buatKode();
+      } else {
+        alert("❌ Akses Ditolak! Data tidak terdaftar dalam database.");
+      }
+    })
+    .catch(e => {
+      btn.innerText = originalText; 
+      btn.disabled = false;
+      alert("Gagal terhubung ke server.");
+    });
+  }
+
+  function kirimForm() {
+    var judul = document.getElementById('judul').value.trim();
+    var isi = document.getElementById('isi').value.trim();
+    
+    if (judul === "" || isi === "") { 
+      alert("Judul dan Isi Laporan wajib diisi!"); 
+      return; 
+    }
+    
+    var btn = document.getElementById('btnKirim');
+    var originalText = btn.innerText;
+    btn.innerText = "Mengirim Laporan... ⏳"; 
+    btn.disabled = true;
+
+    var kodeUnik = document.getElementById('kodeTiket').innerText;
+    var lokasi = document.getElementById('lokasi').value.trim();
+    
+    var fileInput = document.getElementById('fotoBukti');
+    if (fileInput.files.length > 0) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        kirimDataBackend(kodeUnik, judul, isi, lokasi, e.target.result, btn, originalText);
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    } else {
+      kirimDataBackend(kodeUnik, judul, isi, lokasi, "", btn, originalText);
+    }
+  }
+
+  function kirimDataBackend(kode, judul, isi, lokasi, fotoBase64, btn, originalText) {
+    var payload = {
+      kode: kode,
+      kategori: document.getElementById('kategori').value,
+      judul: judul,
+      isi: isi,
+      tanggal: document.getElementById('tanggal').value,
+      lokasi: lokasi,
+      foto: fotoBase64,
+      kontak: document.getElementById('kontak').value
+    };
+
+    var formData = new URLSearchParams();
+    formData.append("payload", JSON.stringify(payload));
+
+    fetch(URL_APP, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData
+    })
+    .then(r => r.json())
+    .then(d => {
+      btn.innerText = originalText; 
+      btn.disabled = false;
+      if (d.status === "success") {
+        document.getElementById('page-form').classList.add('hidden');
+        document.getElementById('page-sukses').classList.remove('hidden');
+        document.getElementById('kodeFinal').innerText = kode;
+
+        document.getElementById('judul').value = "";
+        document.getElementById('isi').value = "";
+        document.getElementById('lokasi').value = "";
+        document.getElementById('fotoBukti').value = "";
+        document.getElementById('kontak').value = "";
+      } else {
+        alert("Gagal menyimpan laporan.");
+      }
+    })
+    .catch(e => {
+      btn.innerText = originalText; 
+      btn.disabled = false;
+      alert("Terjadi kesalahan jaringan.");
+    });
+  }
+
+  function cekStatus() {
+    var kode = document.getElementById('cekKode').value.trim().toUpperCase();
+    var hasilDiv = document.getElementById('hasilCek');
+    if(!kode) { 
+      alert("Masukkan kode tiket!"); 
+      return; 
+    }
+    
+    hasilDiv.innerHTML = "<i>⏳ Memeriksa database...</i>"; 
+    hasilDiv.classList.remove('hidden');
+
+    fetch(URL_APP + "?action=cek&kode=" + encodeURIComponent(kode))
+    .then(r => r.json())
+    .then(d => {
+      if(d.status === "success") {
+        var ulasanSection = "";
+        if(d.data.status.toLowerCase() === "selesai") {
+          if (d.data.rating && d.data.rating !== "") {
+            ulasanSection = `
+              <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed rgba(0,0,0,0.1);">
+                <p style="font-size: 0.88rem; font-weight: 600; color: #34c759; margin-bottom: 0.2rem;">⭐ Ulasan Anda:</p>
+                <div class="rating-stars">${'★'.repeat(d.data.rating)}</div>
+                <p style="font-size: 0.85rem; color: var(--apple-muted); margin-top: 0.2rem;">"${d.data.ulasan}"</p>
+              </div>
+            `;
+          } else {
+            ulasanSection = `
+              <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed rgba(0,0,0,0.1);">
+                <p style="font-size: 0.88rem; font-weight: 600; color: #34c759; margin-bottom: 0.4rem;">⭐ Rating Kepuasan Layanan:</p>
+                <select id="inputRating" style="margin-bottom: 0.5rem; padding: 0.5rem;">
+                  <option value="5">⭐⭐⭐⭐⭐ (Sangat Puas)</option>
+                  <option value="4">⭐⭐⭐⭐ (Puas)</option>
+                  <option value="3">⭐⭐⭐ (Cukup)</option>
+                  <option value="2">⭐⭐ (Kurang)</option>
+                  <option value="1">⭐ (Sangat Kurang)</option>
+                </select>
+                <textarea id="inputKomentar" rows="2" placeholder="Tulis masukan Anda..." style="margin-bottom: 0.5rem;"></textarea>
+                <button type="button" class="btn btn-main" onclick="kirimUlasan('${kode}')" style="padding: 0.6rem 1rem; font-size: 0.85rem; width: 100%;">Kirim Ulasan</button>
+              </div>
+            `;
+          }
+        }
+
+        hasilDiv.innerHTML = `
+          <div style="margin-bottom:0.4rem; font-size: 0.95rem;"><b>Judul:</b> ${d.data.judul} (${d.data.kategori})</div>
+          <div style="margin-bottom:0.4rem; font-size: 0.95rem;"><b>Status:</b> <span class="badge-status" style="background:#e6f4ea; color:#34c759;">${d.data.status}</span></div>
+          <div style="font-size: 0.88rem; color: var(--apple-muted);"><b>Progress:</b> ${d.data.progress}</div>
+          ${ulasanSection}
+        `;
+      } else {
+        hasilDiv.innerHTML = `<span style="color:#ff3b30; font-size: 0.95rem;">❌ Kode tiket tidak ditemukan.</span>`;
+      }
+    })
+    .catch(e => {
+      hasilDiv.innerHTML = `<span style="color:#ff3b30; font-size: 0.95rem;">❌ Kesalahan jaringan.</span>`;
+    });
+  }
+
+  function kirimUlasan(kodeTiket) {
+    var rating = document.getElementById('inputRating').value;
+    var komentar = document.getElementById('inputKomentar').value.trim();
+
+    if (!komentar) {
+      alert("Tulis komentar ulasan Anda!");
+      return;
+    }
+
+    var payload = { action: "beri_ulasan", kode: kodeTiket, rating: rating, komentar: komentar };
+    var formData = new URLSearchParams();
+    formData.append("payload", JSON.stringify(payload));
+
+    fetch(URL_APP, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData
+    })
+    .then(r => r.json())
+    .then(d => {
+      if(d.status === "success") {
+        alert("Terima kasih atas ulasan Anda!");
+        cekStatus();
+        loadTabelSelesai();
+      } else {
+        alert("Gagal mengirim ulasan.");
+      }
+    })
+    .catch(e => {
+      alert("Kesalahan jaringan.");
+    });
+  }
+
+  function loadTabelSelesai() {
+    fetch(URL_APP + "?action=selesai")
+    .then(r => r.json())
+    .then(d => {
+      if (d.status === "success") {
+        var tbody = document.getElementById('tabelSelesaiBody');
+        if (!d.data || d.data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--apple-muted);">Belum ada aspirasi selesai.</td></tr>`;
+          return;
+        }
+        var html = "";
+        d.data.forEach(item => {
+          var fotoLink = item.foto !== "-" && item.foto !== "" ? `<a href="${item.foto}" target="_blank" style="color: var(--apple-primary); font-weight: 600; text-decoration:none;">Lihat Foto</a>` : `<span style="color:var(--apple-muted);">Tidak ada</span>`;
+          var bintang = '★'.repeat(Number(item.rating) || 5);
+          html += `
+            <tr>
+              <td><strong>${item.kategori}</strong><br><span style="font-size:0.82rem; color: var(--apple-muted);">${item.judul}</span></td>
+              <td>${item.lokasi}</td>
+              <td>${fotoLink}</td>
+              <td>
+                <div class="rating-stars">${bintang}</div>
+                <p style="margin: 0.2rem 0 0 0; font-size: 0.82rem; color: var(--apple-muted);">"${item.ulasan}"</p>
+              </td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html;
+      }
+    })
+    .catch(e => {
+      console.error("Gagal memuat tabel");
+    });
+  }
+</script>
+</body>
+</html>

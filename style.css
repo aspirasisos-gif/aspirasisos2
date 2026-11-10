@@ -1,0 +1,336 @@
+/* ==========================================================================
+   ASPIRASISOS - AURORA GLASS DESIGN SYSTEM (SUPER VIBRANT & PREMIUM)
+   ========================================================================== */
+/* Style untuk Logo Gambar */
+.site-logo {
+  display: block;
+  margin: 0 auto 1rem auto;
+  max-width: 100px;
+  height: auto;
+  background: transparent;
+  mix-blend-mode: multiply;
+}
+
+:root {
+  --apple-primary: #0b0c0a;
+  --apple-primary-hover: #c5e6ec;
+  --apple-dark: #0f172a;
+  --apple-muted: #475569;
+  --apple-card-bg: rgba(255, 255, 255, 0.65);
+  --apple-card-border: rgba(255, 255, 255, 0.75);
+  --apple-card-glow: rgba(255, 255, 255, 0.4);
+  --apple-hairline: rgba(15, 23, 42, 0.08);
+  --radius-xl: 28px;
+  --radius-lg: 18px;
+  --radius-pill: 9999px;
+  --font-apple: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* BACKGROUND DYNAMIC AURORA & MESH GRADIENT */
+body {
+  font-family: var(--font-apple);
+  color: var(--apple-dark);
+  min-height: 100vh;
+  padding: 3rem 1rem;
+  background-color: #69fa99;
+  background-image: 
+    radial-gradient(at 10% 10%, rgba(102, 117, 139, 0.35) 0px, transparent 50%),
+    radial-gradient(at 90% 15%, rgba(168, 85, 247, 0.3) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(56, 189, 248, 0.25) 0px, transparent 50%),
+    radial-gradient(at 80% 85%, rgba(16, 185, 129, 0.25) 0px, transparent 50%),
+    radial-gradient(at 15% 85%, rgba(99, 102, 241, 0.3) 0px, transparent 50%);
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* Header Section */
+.app-header {
+  text-align: center;
+  margin-bottom: 2.8rem;
+}
+
+.app-badge {
+  display: inline-block;
+  padding: 0.45rem 1.1rem;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--apple-primary);
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 15px rgba(0, 113, 227, 0.12);
+}
+
+.app-header h2 {
+  font-size: 3.4rem;
+  font-weight: 800;
+  letter-spacing: -1.8px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #2563eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.05;
+  margin-bottom: 0.6rem;
+}
+
+.slogan {
+  color: var(--apple-muted);
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+}
+
+/* Frosted Glass Card */
+.card {
+  background: var(--apple-card-bg);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1.5px solid var(--apple-card-border);
+  border-radius: var(--radius-xl);
+  padding: 2.4rem;
+  margin-bottom: 2rem;
+  box-shadow: 
+    0 20px 40px -15px rgba(15, 23, 42, 0.07),
+    0 0 0 1px inset var(--apple-card-glow);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 24px 48px -12px rgba(15, 23, 42, 0.12),
+    0 0 0 1px inset rgba(255, 255, 255, 0.9);
+}
+
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.4rem;
+  color: var(--apple-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-subtitle {
+  font-size: 0.92rem;
+  color: var(--apple-muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.45;
+}
+
+/* Action Grid & Feature Box */
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.feature-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.feature-box {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  padding: 1.4rem 1.5rem;
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+  transition: transform 0.25s ease;
+}
+
+.feature-box:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.feature-box h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: var(--apple-dark);
+}
+
+.feature-box p {
+  font-size: 0.86rem;
+  color: var(--apple-muted);
+  line-height: 1.4;
+}
+
+/* Glowing Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.05rem 1.8rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.98rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-main {
+  background: linear-gradient(135deg, #0071e3 0%, #2563eb 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 113, 227, 0.35);
+}
+
+.btn-main:hover {
+  background: linear-gradient(135deg, #0077ed 0%, #1d4ed8 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(37, 99, 235, 0.45);
+}
+
+.btn-main:active {
+  transform: scale(0.98);
+}
+
+.btn-alert {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.25);
+}
+
+.btn-alert:hover {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.35);
+}
+
+/* Inputs & Form Controls */
+label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--apple-dark);
+  margin-bottom: 0.45rem;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="file"],
+select,
+textarea {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.85);
+  font-family: inherit;
+  font-size: 0.98rem;
+  color: var(--apple-dark);
+  margin-bottom: 1.3rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  background: #ffffff;
+  border-color: var(--apple-primary);
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.18);
+}
+
+/* Tables */
+.table-container {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+th {
+  background: rgba(15, 23, 42, 0.04);
+  padding: 1rem 1.2rem;
+  font-weight: 700;
+  color: var(--apple-muted);
+  border-bottom: 1px solid var(--apple-hairline);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.8px;
+}
+
+td {
+  padding: 1.1rem 1.2rem;
+  border-bottom: 1px solid var(--apple-hairline);
+  color: var(--apple-dark);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+/* Utilities */
+.hidden { display: none !important; }
+
+.badge-status {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.status-result-box {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1.5px solid rgba(34, 197, 94, 0.3);
+  padding: 1.3rem;
+  border-radius: var(--radius-lg);
+  margin-top: 1.2rem;
+  backdrop-filter: blur(10px);
+}
+
+.back-link {
+  background: none;
+  border: none;
+  color: var(--apple-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.back-link:hover { text-decoration: underline; }
+.rating-stars { color: #f59e0b; letter-spacing: 2px; }
+
+@media (max-width: 640px) {
+  .action-grid, .feature-row { grid-template-columns: 1fr; }
+  .app-header h2 { font-size: 2.4rem; }
+  body { padding: 1.5rem 0.6rem; }
+}

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Dashboard Aspirasisos</title>
+<style>
+  :root {
+    --bg-app: #f1f5f9; --surface: #ffffff; --primary: #4f46e5; --primary-hover: #4338ca;
+    --text-main: #1e293b; --text-muted: #64748b; --border: #e2e8f0; --danger: #ef4444; --danger-hover: #dc2626;
+  }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg-app); padding: 1rem; margin: 0; color: var(--text-main); }
+  .container { max-width: 1400px; margin: 0 auto; background: var(--surface); padding: 1.5rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+  .header-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 2px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem; }
+  h2 { margin: 0; color: var(--primary); font-size: 1.5rem; }
+  
+  .table-container { width: 100%; overflow-x: auto; max-height: 70vh; border: 1px solid var(--border); border-radius: 12px; }
+  table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; white-space: nowrap; }
+  th, td { padding: 0.75rem 0.9rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  th { background: #f8fafc; color: #475569; font-weight: 700; position: sticky; top: 0; z-index: 10; }
+  tr:hover { background: #f8fafc; }
+
+  input, select, textarea { width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; box-sizing: border-box; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+  
+  .btn { padding: 0.5rem 0.8rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 0.8rem; transition: background 0.2s; color: white; display: inline-flex; align-items: center; gap: 0.3rem; }
+  .btn-primary { background: var(--primary); }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-danger { background: var(--danger); }
+  .btn-danger:hover { background: var(--danger-hover); }
+  .btn-success { background: #10b981; }
+  
+  .thumb-img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); background: #eee; }
+  #loginArea { max-width: 400px; margin: 4rem auto; text-align: center; padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  
+  <div id="loginArea">
+    <h2>🛡️ Admin Login</h2>
+    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Masukkan password</p>
+    <input type="password" id="passInput" placeholder="Password Admin" onkeypress="checkEnter(event)" style="text-align: center; margin-bottom: 1rem;">
+    <button type="button" class="btn btn-primary" onclick="loadAdminData()" style="width: 100%; justify-content: center;">Masuk ke Dashboard</button>
+  </div>
+
+  <div id="dataArea" style="display: none;">
+    <div class="header-flex">
+      <div>
+        <h2>🛡️ Dashboard Admin</h2>
+        <p style="margin: 0.2rem 0 0 0; color: var(--text-muted); font-size: 0.85rem;">Edit status, progres, ganti foto bukti, atau hapus data secara langsung.</p>
+      </div>
+      <button type="button" class="btn btn-success" onclick="loadAdminData()">🔄 Refresh Data</button>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Kode</th>
+            <th>Judul</th>
+            <th>Kategori</th>
+            <th>Isi Laporan</th>
+            <th>Tanggal</th>
+            <th>Kontak</th>
+            <th>Lokasi</th>
+            <th>Foto Bukti</th>
+            <th>Status</th>
+            <th>Progres / Hasil</th>
+            <th>Rating</th>
+            <th>Ulasan</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tabelAdminBody">
+          <tr><td colspan="13" style="text-align: center; color: var(--text-muted);">Memuat data database...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var URL_APP = "https://script.google.com/macros/s/AKfycbwGQnspJefE_Yvv8KnX3mUliNGS6-JdoB57PHBgISwUYzPJfVuncMSrk9womNWI08E1/exec";
+
+  function checkEnter(e) {
+    if (e.key === "Enter") { loadAdminData(); }
+  }
+
+  function loadAdminData() {
+    var pass = document.getElementById('passInput').value.trim() || sessionStorage.getItem('adminPass');
+    if (!pass) { alert("Masukkan password terlebih dahulu!"); return; }
+
+    fetch(URL_APP + "?action=admin_komplit&pass=" + encodeURIComponent(pass))
+    .then(r => r.json())
+    .then(d => {
+      if(d.status === "success") {
+        sessionStorage.setItem('adminPass', pass);
+        document.getElementById('loginArea').style.display = "none";
+        document.getElementById('dataArea').style.display = "block";
+        renderTabel(d.data, pass);
+      } else {
+        sessionStorage.removeItem('adminPass');
+        alert("❌ Kata sandi salah!");
+      }
+    })
+    .catch(e => {
+      alert("Gagal terhubung ke server database.");
+    });
+  }
+
+  function renderTabel(dataList, password) {
+    var tbody = document.getElementById('tabelAdminBody');
+    if (dataList.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="13" style="text-align: center; color: var(--text-muted);">Belum ada laporan masuk.</td></tr>`;
+      return;
+    }
+
+    var html = "";
+    dataList.forEach((item, index) => {
+      var fotoPreview = item.foto && item.foto !== "-" ? `<a href="${item.foto}" target="_blank"><img src="${item.foto}" class="thumb-img" title="Klik untuk memperbesar"></a>` : `<span style="font-size:0.75rem; color:#94a3b8;">Tanpa Foto</span>`;
+
+      html += `
+        <tr data-kode="${item.kode}">
+          <td><b style="font-family: monospace; color: var(--primary);">${item.kode}</b></td>
+          <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;" title="${item.judul}">${item.judul}</td>
+          <td><span style="background: #e0e7ff; color: #3730a3; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">${item.kategori}</span></td>
+          <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;" title="${item.isi}">${item.isi}</td>
+          <td style="font-size: 0.8rem; color: #64748b;">${item.tanggal}</td>
+          <td style="font-size: 0.8rem; color: #64748b;">${item.kontak}</td>
+          <td style="font-size: 0.8rem; color: #64748b;">${item.lokasi || '-'}</td>
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              ${fotoPreview}
+              <input type="file" id="file_${index}" accept="image/*" style="font-size: 0.7rem; padding: 2px; width: 130px;">
+            </div>
+          </td>
+          <td>
+            <select id="status_${index}" style="font-weight: bold; width: 110px;">
+              <option value="Diterima" ${item.status === 'Diterima' ? 'selected' : ''}>Diterima</option>
+              <option value="Diproses" ${item.status === 'Diproses' ? 'selected' : ''}>Diproses</option>
+              <option value="Selesai" ${item.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+            </select>
+          </td>
+          <td>
+            <input type="text" id="progress_${index}" value="${item.progress || ''}" placeholder="Tulis progres..." style="min-width: 160px;">
+          </td>
+          <td style="text-align: center; font-weight: bold; color: #f59e0b;">${item.rating ? item.rating + ' ⭐' : '-'}</td>
+          <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; color: #475569;" title="${item.ulasan}">${item.ulasan || '-'}</td>
+          <td>
+            <div style="display: flex; gap: 4px;">
+              <button type="button" class="btn btn-primary" onclick="simpanPerubahan('${item.kode}', ${index})">💾 Simpan</button>
+              <button type="button" class="btn btn-danger" onclick="hapusLaporan('${item.kode}')">🗑️ Hapus</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    });
+    tbody.innerHTML = html;
+  }
+
+  // Kompresi Foto sebelum diunggah (Mencegah Payload Too Large)
+  function kompresGambar(file, maxWidth, quality, callback) {
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function(e) {
+      var img = new Image();
+      img.src = e.target.result;
+      img.onload = function() {
+        var canvas = document.createElement('canvas');
+        var width = img.width;
+        var height = img.height;
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        callback(canvas.toDataURL('image/jpeg', quality));
+      };
+    };
+  }
+
+  function simpanPerubahan(kodeTiket, index) {
+    var password = sessionStorage.getItem('adminPass');
+    var statusVal = document.getElementById(`status_${index}`).value;
+    var progressVal = document.getElementById(`progress_${index}`).value.trim();
+    var fileInput = document.getElementById(`file_${index}`);
+
+    var btnTarget = event.target;
+    var originalText = btnTarget.innerText;
+    btnTarget.innerText = "Menyimpan...";
+    btnTarget.disabled = true;
+
+    if (fileInput.files.length > 0) {
+      kompresGambar(fileInput.files[0], 800, 0.7, function(base64Foto) {
+        kirimUpdateBackend(kodeTiket, statusVal, progressVal, base64Foto, password, btnTarget, originalText);
+      });
+    } else {
+      kirimUpdateBackend(kodeTiket, statusVal, progressVal, "", password, btnTarget, originalText);
+    }
+  }
+
+  function hapusLaporan(kode) {
+    var password = sessionStorage.getItem('adminPass');
+    if (!confirm("⚠️ Apakah Anda yakin ingin menghapus laporan [ " + kode + " ]? Data yang dihapus tidak bisa dikembalikan.")) {
+      return;
+    }
+
+    var btnTarget = event.target;
+    var originalText = btnTarget.innerText;
+    btnTarget.innerText = "Menghapus...";
+    btnTarget.disabled = true;
+
+    var payload = {
+      action: "hapus_admin",
+      pass: password,
+      kode: kode
+    };
+
+    fetch(URL_APP, { method: "POST", body: JSON.stringify(payload) })
+    .then(r => r.json())
+    .then(d => {
+      btnTarget.innerText = originalText;
+      btnTarget.disabled = false;
+      if (d.status === "success") {
+        alert("🗑️ Laporan " + kode + " berhasil dihapus!");
+        loadAdminData();
+      } else {
+        alert("❌ Gagal menghapus: " + (d.message || "Kesalahan server"));
+      }
+    })
+    .catch(e => {
+      btnTarget.innerText = originalText;
+      btnTarget.disabled = false;
+      alert("Gagal terhubung ke jaringan.");
+    });
+  }
+
+  function kirimUpdateBackend(kode, status, progress, fotoBase64, password, btn, origText) {
+    var payload = {
+      action: "update_admin",
+      pass: password,
+      kode: kode,
+      status: status,
+      progress: progress,
+      foto: fotoBase64
+    };
+
+    fetch(URL_APP, { method: "POST", body: JSON.stringify(payload) })
+    .then(r => r.json())
+    .then(d => {
+      btn.innerText = origText;
+      btn.disabled = false;
+      if (d.status === "success") {
+        alert("✅ Data laporan berhasil diperbarui!");
+        loadAdminData();
+      } else {
+        alert("❌ Gagal memperbarui: " + (d.message || "Kesalahan server"));
+      }
+    })
+    .catch(e => {
+      btn.innerText = origText;
+      btn.disabled = false;
+      alert("Gagal terhubung ke jaringan.");
+    });
+  }
+</script>
+</body>
+</html>
