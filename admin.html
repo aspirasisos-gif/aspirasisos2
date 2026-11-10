@@ -183,9 +183,11 @@
 
   // FUNGSI LOGIN ADMIN YANG BENAR
   function loadAdminData() {
-    var email = document.getElementById('emailInput').value.trim();
-    var pass = document.getElementById('passInput').value.trim();
-    
+  var email = document.getElementById('emailInput').value.trim();
+  var pass = document.getElementById('passInput').value.trim();
+
+  // ✅ BENAR: Letakkan di sini setelah 'pass' sudah ada nilainya
+  currentAdminPass = pass;
     if (!email || !pass) { 
       alert("Masukkan email dan password terlebih dahulu!"); 
       return; 
