@@ -236,17 +236,15 @@
     document.getElementById('statSelesai').innerText = selesai;
   }
 
-  function renderTabel(dataList) {
+function renderTabel(dataList) {
     var tbody = document.getElementById('tabelAdminBody');
     if (!dataList || dataList.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--app-muted); padding: 3rem;">Belum ada laporan masuk.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--app-muted); padding: 3rem;">Belum ada laporan masuk.</td></tr>`;
       return;
     }
 
     var html = "";
     dataList.forEach((item, index) => {
-      var waLink = item.kontak && item.kontak !== "-" ? `<a href="https://wa.me/${item.kontak.replace(/^0/, '62')}?text=Halo%20dengan%20pelapor%20tiket%20${item.kode}" target="_blank" class="btn btn-success" style="padding: 0.35rem 0.6rem; font-size: 0.75rem;">💬 WhatsApp</a>` : '-';
-
       html += `
         <tr>
           <td><b style="font-family: monospace; color: var(--app-primary);">${item.kode}</b></td>
@@ -254,7 +252,7 @@
             <strong>${item.judul}</strong><br>
             <span style="background: #e0e7ff; color: #3730a3; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">${item.kategori}</span>
           </td>
-          <td style="font-size: 0.82rem; color: var(--app-muted);">${item.kontak || '-'}</td>
+          <td style="font-size: 0.82rem; color: var(--app-muted);">${item.kontak || '-'}<br>Pelapor</td>
           <td style="font-size: 0.82rem; color: var(--app-muted);">${item.lokasi || '-'}<br>${item.tanggal || ''}</td>
           <td>
             <select id="status_${index}" style="font-weight: bold; width: 110px;">
@@ -269,7 +267,6 @@
           <td>
             <input type="text" id="catatan_${index}" value="${item.catatanInternal || ''}" placeholder="Catatan privat..." style="min-width: 140px; background: #fffbeb;">
           </td>
-          <td>${waLink}</td>
           <td>
             <div style="display: flex; gap: 4px;">
               <button type="button" class="btn btn-primary" onclick="simpanPerubahan('${item.kode}', ${index})">💾 Simpan</button>
@@ -281,7 +278,7 @@
     });
     tbody.innerHTML = html;
   }
-
+  
   function filterTabel() {
     var keyword = document.getElementById('searchInput').value.toLowerCase();
     var kat = document.getElementById('filterKategori').value;
